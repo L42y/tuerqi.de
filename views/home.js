@@ -5,7 +5,7 @@ let Layout = require('./layouts');
 
 let bodyStyle = {
   margin: 0,
-  background: 'url(/_/taksim.jpg) fixed no-repeat',
+  background: 'url(/_/taksim.jpg) 50% fixed no-repeat',
   backgroundSize: 'cover'
 };
 
