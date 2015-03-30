@@ -1,7 +1,12 @@
 'use strict';
 
+require("babel/register");
+
+let fs = require('fs');
 let Hapi = require('hapi');
 let React = require('react');
+let Router = require('react-router');
+let routes = require('./routes');
 
 let server = new Hapi.Server({
   connections: {
@@ -17,26 +22,18 @@ server.connection({
   port: process.env.PORT || 9999
 });
 
-server.views({
-  path: 'views',
-  engines: {
-    js: require('hapi-react-views')
-  },
-  relativeTo: __dirname,
-  compileOptions: {
-    'node-jsx': {
-      harmony: true,
-      extension: '.js'
-    },
-    'renderMethod': 'renderToString'
-  }
-});
+const OOPS = 'Oops, something went wrong.';
+const TEMPLATE = fs.readFileSync('./index.html', {encoding: 'utf8'});
 
 server.route([{
-  path: '/',
+  path: '/{params*}',
   method: 'GET',
   handler: function(request, reply) {
-    return reply.view('home');
+    Router.run(routes, request.path, function(Handler) {
+      let markup = React.renderToString(<Handler/>);
+
+      return reply(TEMPLATE.replace(OOPS, markup));
+    });
   }
 }, {
   path: '/_/{param*}',
@@ -45,6 +42,20 @@ server.route([{
     directory: {
       path: 'public'
     }
+  }
+}, {
+  path: '/!/{param*}',
+  method: 'GET',
+  handler: {
+    directory: {
+      path: 'tmp'
+    }
+  }
+}, {
+  path: '/favicon.ico',
+  method: 'GET',
+  handler(request, reply) {
+    reply('Why bother for a stupid icon?').code(404);
   }
 }]);
 

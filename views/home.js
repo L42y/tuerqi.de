@@ -1,9 +1,10 @@
 'use strict';
 
 let React = require('react');
-let Layout = require('./layouts');
+let {Link} = require('react-router');
 
-let bodyStyle = {
+let homeStyle = {
+  height: '100%',
   margin: 0,
   background: 'url(/_/taksim.jpg) 50% fixed no-repeat',
   backgroundSize: 'cover'
@@ -12,6 +13,12 @@ let bodyStyle = {
 let copyrightStyle = {
   color: 'white',
   right: 10,
+  bottom: 10,
+  position: 'fixed'
+};
+
+let aboutStyle = {
+  left: 10,
   bottom: 10,
   position: 'fixed'
 };
@@ -30,9 +37,10 @@ let Copyright = React.createClass({
 let Home = React.createClass({
   render() {
     return (
-      <Layout bodyStyle={bodyStyle}>
+      <div style={homeStyle}>
+        <Link to="about" style={aboutStyle}>About</Link>
         <Copyright/>
-      </Layout>
+      </div>
     );
   }
 });
